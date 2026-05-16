@@ -17,3 +17,5 @@ Target server is hosted on Azure.
 make
 ./build/tcp2http <hostname>
 ```
+
+demo-server-cpdyatephbb3gdgw.italynorth-01.azurewebsites.net/api/test
