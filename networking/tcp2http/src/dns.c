@@ -42,6 +42,7 @@ int dns_resolve(const char *hostname, char *ip_out, size_t ip_out_len)
         struct sockaddr_in *a = (struct sockaddr_in *)curr->ai_addr;
         inet_ntop(AF_INET, &a->sin_addr, buf, sizeof(buf));
         printf("[dns] IP_%d: %s\n", i, buf);
+        printf("[dns] port: %d\n", ntohs(a->sin_port));
         curr = curr->ai_next;
         i++;
     }

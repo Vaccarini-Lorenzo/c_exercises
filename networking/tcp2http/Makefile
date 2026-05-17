@@ -9,6 +9,8 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/dns.c \
        $(SRC_DIR)/tcp.c \
        $(SRC_DIR)/tls.c \
+       $(SRC_DIR)/tls_record.c \
+       $(SRC_DIR)/tls_hello.c \
        $(SRC_DIR)/http.c
 
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)

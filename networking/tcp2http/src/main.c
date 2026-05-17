@@ -34,5 +34,44 @@ int main(int argc, char *argv[])
     }
     printf("[dns] %s -> %s\n", hostname, ip);
 
+    // TCP connection
+    int sockfd = tcp_connect(ip, port);
+    if (sockfd < 0) {
+        fprintf(stderr, "tcp: connection failed\n");
+        return 1;
+    }
+    printf("[tcp] connected to %s:%s (fd=%d)\n", ip, port, sockfd);
+
+    /*
+    TLS handshake
+    ```
+    Client                                          Server
+        |                                               |
+        |--- ClientHello (random, ciphers, SNI) ------->|
+        |                                               |
+        |<-- ServerHello (chosen cipher, random) -------|
+        |<-- Certificate (X.509 chain) -----------------|
+        |<-- ServerKeyExchange (ECDH pubkey, signed) ---|
+        |<-- ServerHelloDone ---------------------------|
+        |                                               |
+        |--- ClientKeyExchange (our ECDH pubkey) ------>|
+        |--- ChangeCipherSpec ------------------------->|
+        |--- Finished (encrypted verify) -------------->|
+        |                                               |
+        |<-- ChangeCipherSpec --------------------------|
+        |<-- Finished (encrypted verify) ---------------|
+        |                                               |
+        |===== Application data (HTTP) encrypted =======|
+    ```
+    */
+    tls_state_t *tls = tls_handshake(sockfd, hostname);
+    if (!tls) {
+        fprintf(stderr, "tls: handshake failed\n");
+        tcp_close(sockfd);
+        return 1;
+    }
+
+    tls_free(tls);
+    tcp_close(sockfd);
     return 0;
 }
