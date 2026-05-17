@@ -1,4 +1,5 @@
 #include "tcp.h"
+#include "log.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,7 +18,7 @@ int tcp_connect(const char *ip, const char *port)
     // 0 = let kernel pick protocol (TCP for SOCK_STREAM)
     int fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd < 0) {
-        perror("socket");
+        LOG("tcp: socket creation failed");
         return -1;
     }
 
@@ -30,7 +31,7 @@ int tcp_connect(const char *ip, const char *port)
 
     // Convert IP string to binary form
     if (inet_pton(AF_INET, ip, &addr.sin_addr) != 1) {
-        fprintf(stderr, "tcp: invalid ip %s\n", ip);
+        LOG("tcp: invalid ip %s", ip);
         close(fd);
         return -1;
     }
@@ -38,7 +39,7 @@ int tcp_connect(const char *ip, const char *port)
     // 3-way handshake:
     // Thread blocks here until SYN-ACK received and ACK sent
     if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-        perror("connect");
+        LOG("tcp: connect failed");
         close(fd);
         return -1;
     }

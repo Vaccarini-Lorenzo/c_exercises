@@ -12,6 +12,11 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/tls_record.c \
        $(SRC_DIR)/tls_hello.c \
        $(SRC_DIR)/tls_parse.c \
+       $(SRC_DIR)/tls_cert.c \
+       $(SRC_DIR)/sha256.c \
+       $(SRC_DIR)/bignum.c \
+       $(SRC_DIR)/p256.c \
+       $(SRC_DIR)/rsa.c \
        $(SRC_DIR)/http.c
 
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)

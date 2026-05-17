@@ -1,4 +1,5 @@
 #include "tls_parse.h"
+#include "log.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -12,7 +13,7 @@ int tls_parse_server_hello(const uint8_t *data, size_t len, server_hello_t *out)
 {
     // Minimum: version(2) + random(32) + session_id_len(1) + cipher(2) + comp(1) = 38
     if (len < 38) {
-        fprintf(stderr, "tls_parse: ServerHello too short (%zu)\n", len);
+        LOG("tls_parse: ServerHello too short (%zu)", len);
         return -1;
     }
 
@@ -46,7 +47,7 @@ int tls_parse_server_key_exchange(const uint8_t *data, size_t len,
                                   server_key_exchange_t *out)
 {
     if (len < 4) {
-        fprintf(stderr, "tls_parse: ServerKeyExchange too short\n");
+        LOG("tls_parse: ServerKeyExchange too short");
         return -1;
     }
 
@@ -65,7 +66,7 @@ int tls_parse_server_key_exchange(const uint8_t *data, size_t len,
     pos += 1;
 
     if (pk_len > 65 || pos + pk_len > len) {
-        fprintf(stderr, "tls_parse: invalid pubkey length %u\n", pk_len);
+        LOG("tls_parse: invalid pubkey length %u", pk_len);
         return -1;
     }
 

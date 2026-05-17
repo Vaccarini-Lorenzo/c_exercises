@@ -1,4 +1,5 @@
 #include "dns.h"
+#include "log.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -20,7 +21,7 @@ int dns_resolve(const char *hostname, char *ip_out, size_t ip_out_len)
 
     int err = getaddrinfo(hostname, NULL, &hints, &result);
     if (err != 0) {
-        fprintf(stderr, "dns: getaddrinfo: %s\n", gai_strerror(err));
+        LOG("dns: getaddrinfo: %s", gai_strerror(err));
         return -1;
     }
 
@@ -41,8 +42,8 @@ int dns_resolve(const char *hostname, char *ip_out, size_t ip_out_len)
     while (curr) {
         struct sockaddr_in *a = (struct sockaddr_in *)curr->ai_addr;
         inet_ntop(AF_INET, &a->sin_addr, buf, sizeof(buf));
-        printf("[dns] IP_%d: %s\n", i, buf);
-        printf("[dns] port: %d\n", ntohs(a->sin_port));
+        LOG("[dns] IP_%d: %s", i, buf);
+        LOG("[dns] port: %d", ntohs(a->sin_port));
         curr = curr->ai_next;
         i++;
     }

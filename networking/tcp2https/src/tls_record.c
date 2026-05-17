@@ -1,4 +1,5 @@
 #include "tls_record.h"
+#include "log.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -56,7 +57,7 @@ int tls_record_recv(int fd, uint8_t *content_type,
     uint16_t len = (header[3] << 8) | header[4];
 
     if (len > TLS_MAX_RECORD_PAYLOAD) {
-        fprintf(stderr, "tls_record: payload too large: %u\n", len);
+        LOG("tls_record: payload too large: %u", len);
         return -1;
     }
 

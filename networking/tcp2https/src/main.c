@@ -6,6 +6,7 @@
 #include "tcp.h"
 #include "tls.h"
 #include "http.h"
+#include "log.h"
 
 int main(int argc, char *argv[])
 {
@@ -29,18 +30,18 @@ int main(int argc, char *argv[])
     // DNS resolution
     char ip[64];
     if (dns_resolve(hostname, ip, sizeof(ip)) != 0) {
-        fprintf(stderr, "dns: failed to resolve %s\n", hostname);
+        LOG("dns: failed to resolve %s", hostname);
         return 1;
     }
-    printf("[dns] %s -> %s\n", hostname, ip);
+    LOG("[dns] %s -> %s", hostname, ip);
 
     // TCP connection
     int sockfd = tcp_connect(ip, port);
     if (sockfd < 0) {
-        fprintf(stderr, "tcp: connection failed\n");
+        LOG("tcp: connection failed");
         return 1;
     }
-    printf("[tcp] connected to %s:%s (fd=%d)\n", ip, port, sockfd);
+    LOG("[tcp] connected to %s:%s (fd=%d)", ip, port, sockfd);
 
     /*
     TLS handshake
@@ -66,7 +67,7 @@ int main(int argc, char *argv[])
     */
     tls_state_t *tls = tls_handshake(sockfd, hostname);
     if (!tls) {
-        fprintf(stderr, "tls: handshake failed\n");
+        LOG("tls: handshake failed");
         tcp_close(sockfd);
         return 1;
     }
